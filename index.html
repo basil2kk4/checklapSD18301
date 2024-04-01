@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Sheets Data</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+  <div class="form-group">
+    <input type="text" class="form-control" id="searchInput" placeholder="Search by Student ID">
+  </div>
+  <table id="data-table" class="table table-striped">
+    <thead>
+     
+    </thead>
+    <tbody>
+      <!-- Data will be inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  // URL of your Google Sheets CSV
+  var csvURL = "https://docs.google.com/spreadsheets/d/1CDJLkGlLjFEv8a2JbvkFSOxlQOddMGY6nwdfMkCCIBU/export?format=csv&id=1CDJLkGlLjFEv8a2JbvkFSOxlQOddMGY6nwdfMkCCIBU&gid=540335423";
+  
+  // Function to parse CSV data
+  function parseCSVData(data) {
+    var rows = data.split("\n");
+    var table = $('#data-table tbody');
+    
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].split(",");
+      if (cells.length >= 3) {
+        var rowData = "<tr><td>" + cells[0] + "</td><td>" + cells[1] + "</td></tr>";
+        table.append(rowData);
+      }
+    }
+  }
+
+  // Fetch data from Google Sheets CSV
+  $.get(csvURL, function(data) {
+    parseCSVData(data);
+  });
+
+  // Search functionality
+  $('#searchInput').on('keyup', function() {
+    var searchText = $(this).val().toLowerCase();
+    $('#data-table tbody tr').filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1)
+    });
+  });
+});
+</script>
+
+</body>
+</html>
